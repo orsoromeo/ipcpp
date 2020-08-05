@@ -1,11 +1,17 @@
 /* short.c */
 
 #include <stdio.h>            /* C input/output                       */
-#include <stdlib.h>           /* C standard library                   */
 #include <glpk.h>             /* GNU GLPK linear/mixed integer solver */
+#include <chrono>
+#include <iostream>
+
+using Clock = std::chrono::high_resolution_clock;
 
 int main(void)
 {
+
+  Clock::time_point t_start_ = Clock::now();
+
   /* declare variables */
   glp_prob *lp;
   int ia[1+1000], ja[1+1000];
@@ -42,5 +48,11 @@ int main(void)
   /* housekeeping */
   glp_delete_prob(lp);
   glp_free_env();
+
+  Clock::time_point t_current_ = Clock::now();
+  double t_since_start_ = std::chrono::duration_cast<std::chrono::nanoseconds>
+                                  (t_current_ - t_start_).count() / 1000.0 / 1000.0;
+
+  std::cout<<"time since start "<<t_since_start_<<" ms"<<std::endl;
   return 0;
 }
